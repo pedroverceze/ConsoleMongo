@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace CDBMongo.Model
 {
-    [BsonCollection("receita")]
+    [BsonCollection("receitas")]
     public class Recipe : Document
     {
         [BsonElement("nome")]
