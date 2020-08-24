@@ -17,6 +17,7 @@ namespace CDBMongo.Data.Repositories
 
         public MongoRepository(IMongoDbSettings settings)
         {
+            BsonDefaults.GuidRepresentation = GuidRepresentation.Standard;
             var database = new MongoClient(settings.ConnectionString).GetDatabase(settings.DatabaseName);
             _collection = database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
         }
@@ -56,7 +57,9 @@ namespace CDBMongo.Data.Repositories
         {
             return Task.Run(() =>
             {
-                var objectId = new ObjectId(id);
+                var objectId = Guid.Parse(id);
+                //var bytes = GuidConverter.ToBytes(objectId, GuidRepresentation.PythonLegacy);
+                //var guid = new Guid(bytes);
                 var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
                 return _collection.Find(filter).SingleOrDefaultAsync();
             });
@@ -87,7 +90,8 @@ namespace CDBMongo.Data.Repositories
         {
             return Task.Run(() =>
             {
-                var objectId = new ObjectId(id);
+                //var objectId = new ObjectId(id);
+                var objectId = Guid.Parse(id);
                 var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
                 _collection.FindOneAndDeleteAsync(filter);
             });

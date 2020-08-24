@@ -2,6 +2,7 @@
 using CDBMongo.Data.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using System;
 
 namespace CDBMongo.Data
