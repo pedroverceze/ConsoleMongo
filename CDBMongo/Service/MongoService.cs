@@ -1,6 +1,5 @@
 ﻿using AutoBogus;
 using CDBMongo.Data.Repositories;
-using CDBMongo.Model;
 using CDBMongo.Model.Product.Enum;
 using DnsClient.Internal;
 using Microsoft.Extensions.Logging;
@@ -13,15 +12,12 @@ namespace CDBMongo.Service
 {
     public class MongoService : IMongoService
     {
-        private readonly IMongoRepository<Recipe> _recipeRepository;
         private readonly IMongoRepository<ProductDto> _productRepository;
         private readonly ILogger<MongoService> _logger;
 
-        public MongoService(IMongoRepository<Recipe> recipeRepository,
-                            IMongoRepository<ProductDto> productRepository,
+        public MongoService(IMongoRepository<ProductDto> productRepository,
                             ILogger<MongoService> logger)
         {
-            _recipeRepository = recipeRepository;
             _productRepository = productRepository;
             _logger = logger;
         }
@@ -42,7 +38,7 @@ namespace CDBMongo.Service
 
                 await _productRepository.InsertOneAsync(product);
 
-                var prod = await GetProductById(product.Id.ToString());
+                var prod = await _productRepository.FindByIdAsync(product.Id.ToString());
                 var prod2 = await _productRepository.FindByConsolidateIdAsync(prod.ConsolidateId);
 
                 prod2.Name = "NameUpdated";
@@ -85,13 +81,6 @@ namespace CDBMongo.Service
 
             _logger.LogInformation("Product created");
             return product;
-        }
-
-        private async Task<ProductDto> GetProductById(string id)
-        {
-            var prod = await _productRepository.FindByIdAsync(id);
-
-            return prod;
         }
     }
 }
