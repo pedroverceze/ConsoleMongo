@@ -20,7 +20,9 @@ namespace CDBMongo.Data.Repositories
 
         Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression);
 
-        Task<TDocument> FindByIdAsync(Guid id);
+        Task<TDocument> FindByIdAsync(string id);
+
+        Task<TDocument> FindByConsolidateIdAsync(string id);
 
         Task InsertOneAsync(TDocument document);
 
@@ -30,7 +32,7 @@ namespace CDBMongo.Data.Repositories
 
         Task DeleteOneAsync(Expression<Func<TDocument, bool>> filterExpression);
 
-        Task DeleteByIdAsync(Guid id);
+        Task DeleteByIdAsync(string id);
 
         Task DeleteManyAsync(Expression<Func<TDocument, bool>> filterExpression);
     }

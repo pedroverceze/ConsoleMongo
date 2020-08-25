@@ -7,6 +7,8 @@ namespace CDBMongo.Data.Documents
     public interface IDocument
     {
         [BsonId]
-        Guid Id { get; set; }
+        ObjectId Id { get; set; }
+
+        string ConsolidateId { get; set; }
     }
 }

@@ -5,6 +5,8 @@ namespace CDBMongo.Data.Documents
 {
     public abstract class Document : IDocument
     {
-        public Guid Id { get; set; }
+        public ObjectId Id { get; set; }
+
+        public string ConsolidateId { get; set; }
     }
 }

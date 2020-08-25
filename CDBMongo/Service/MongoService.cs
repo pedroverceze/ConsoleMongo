@@ -1,10 +1,10 @@
 ﻿using AutoBogus;
 using CDBMongo.Data.Repositories;
 using CDBMongo.Model;
+using CDBMongo.Model.Product.Enum;
 using DnsClient.Internal;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
-using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;
 using TemplateKafka.Producer.Domain.Products.Dto;
@@ -42,18 +42,25 @@ namespace CDBMongo.Service
 
                 await _productRepository.InsertOneAsync(product);
 
-                var prod = await GetProductById(product.Id);
+                var prod = await GetProductById(product.Id.ToString());
+                var prod2 = await _productRepository.FindByConsolidateIdAsync(prod.ConsolidateId);
 
-                prod.Name = "NameUpdated";
+                prod2.Name = "NameUpdated";
+                var tags = new Tags()
+                {
+                    Name = "Alterado"
+                };
 
-                await _productRepository.ReplaceOneAsync(prod);
+                prod2.Tags.Add(tags);
 
-                await _productRepository.DeleteByIdAsync(prod.Id);
+                await _productRepository.ReplaceOneAsync(prod2);
+
+                await _productRepository.DeleteByIdAsync(prod.Id.ToString());
 
                 _logger.LogInformation("Handle Product finished");
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 var ext = e.Message;
 
@@ -67,10 +74,12 @@ namespace CDBMongo.Service
 
         private ProductDto CreateProduct()
         {
-            var id = Guid.NewGuid();
+            var id = ObjectId.GenerateNewId();
+            var consolidateId = Guid.NewGuid().ToString();
 
             var productFake = new AutoFaker<ProductDto>()
-                .RuleFor(f => f.Id, id);
+                .RuleFor(f => f.Id, id)
+                .RuleFor(f => f.ConsolidateId, consolidateId);
 
             var product = productFake.Generate();
 
@@ -78,7 +87,7 @@ namespace CDBMongo.Service
             return product;
         }
 
-        private async Task<ProductDto> GetProductById(Guid id)
+        private async Task<ProductDto> GetProductById(string id)
         {
             var prod = await _productRepository.FindByIdAsync(id);
 

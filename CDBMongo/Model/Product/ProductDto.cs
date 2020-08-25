@@ -1,7 +1,9 @@
 ﻿using CDBMongo.Data.Attributes;
 using CDBMongo.Data.Documents;
+using CDBMongo.Model.Product.Enum;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
+using System.Collections.Generic;
 using TemplateKafka.Producer.Domain.Products.Enums;
 
 namespace TemplateKafka.Producer.Domain.Products.Dto
@@ -27,7 +29,7 @@ namespace TemplateKafka.Producer.Domain.Products.Dto
 
         [BsonElement("Tags")]
         [BsonRequired()]
-        public string[] Tags { get; set; }
+        public List<Tags> Tags { get; set; }
 
         [BsonElement("Category")]
         [BsonRequired()]
