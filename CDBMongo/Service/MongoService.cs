@@ -31,6 +31,7 @@ namespace CDBMongo.Service
             await HandleProduct();
         }
 
+        //Product CRUD
         private async Task HandleProduct()
         {
             try
@@ -49,7 +50,10 @@ namespace CDBMongo.Service
 
                 await _productRepository.DeleteByIdAsync(prod.Id);
 
-            }catch(Exception e)
+                _logger.LogInformation("Handle Product finished");
+
+            }
+            catch(Exception e)
             {
                 var ext = e.Message;
 
@@ -80,85 +84,5 @@ namespace CDBMongo.Service
 
             return prod;
         }
-
-        private async Task<ProductDto> GetProductByConsolidationId(Guid id)
-        {
-            //var consolidation = Guid.Parse(id);
-
-            var prod = await _productRepository.FindOneAsync(p => p.Id == id);
-
-            return prod;
-        }
-
-        //private async Task HandleRecipe()
-        //{
-        //    try
-        //    {
-        //        var id = "5f3d6808d22b25e2dc9b0788";
-        //        var recipe = await GetRecipe(id);
-
-        //        await InsertNewRecipe();
-
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        var ext = e.Message;
-        //        Console.WriteLine(ext);
-        //    }
-
-        //    Console.WriteLine("foi");
-        //}
-
-        //private async Task<Recipe> GetRecipe(string id)
-        //{
-        //    try
-        //    {
-        //        var recipe = await _recipeRepository.FindByIdAsync(id);
-        //        return recipe;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        var ext = e.Message;
-        //        throw e;
-        //    }
-        //}
-
-        //private async Task InsertNewRecipe()
-        //{
-        //    var recipe = new Recipe();
-
-        //    recipe.Id = ObjectId.GenerateNewId();
-        //    recipe.Nome = "Miojão parte 2";
-        //    recipe.ModoDePreparo = "jogar oregano e queijo ralado";
-        //    recipe.Dificuldade = 0;
-        //    recipe.Usuario = "Pedro";
-        //    recipe.Ingredientes = new List<Ingredient>() { CreateIngredient() };
-
-        //    await _recipeRepository.InsertOneAsync(recipe);
-        //}
-
-        //private async Task InsertRecipe(Recipe recipe)
-        //{
-        //    try
-        //    {
-        //        await _recipeRepository.InsertOneAsync(recipe);
-        //    }
-        //    catch (Exception ext)
-        //    {
-        //        Console.WriteLine(ext.Message);
-        //        throw;
-        //    }
-
-        //}
-
-        //private Ingredient CreateIngredient()
-        //{
-        //    var ingredient = new Ingredient();
-
-        //    ingredient.Nome = "Miojo";
-        //    ingredient.Id = ObjectId.GenerateNewId();
-
-        //    return ingredient;
-        //}
     }
 }
