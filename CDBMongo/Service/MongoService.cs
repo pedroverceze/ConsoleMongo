@@ -41,18 +41,20 @@ namespace CDBMongo.Service
 
                 await _productRepository.InsertOneAsync(product);
 
-                //var id = product.Id.ToString();
-                var id = "d05e8682-5461-48e7-8b17-84ffd0532831";
+                var prod = await GetProductById(product.Id);
 
-                var prod = await GetProductById(id);
+                prod.Name = "NameUpdated";
 
-                //var consolidation = "4cb6592f-1471-422c-8791-dc48ea2add43";
+                await _productRepository.ReplaceOneAsync(prod);
 
-                //var prod2 = await GetProductByConsolidationId(consolidation);
+                await _productRepository.DeleteByIdAsync(prod.Id);
 
             }catch(Exception e)
             {
                 var ext = e.Message;
+
+                _logger.LogError(ext);
+
                 throw;
             }
 
@@ -64,8 +66,7 @@ namespace CDBMongo.Service
             var id = Guid.NewGuid();
 
             var productFake = new AutoFaker<ProductDto>()
-                .RuleFor(f => f.Id, id)
-                .RuleFor(f => f.ConsolidationId, Guid.NewGuid().ToString());
+                .RuleFor(f => f.Id, id);
 
             var product = productFake.Generate();
 
@@ -73,18 +74,18 @@ namespace CDBMongo.Service
             return product;
         }
 
-        private async Task<ProductDto> GetProductById(string id)
+        private async Task<ProductDto> GetProductById(Guid id)
         {
             var prod = await _productRepository.FindByIdAsync(id);
 
             return prod;
         }
 
-        private async Task<ProductDto> GetProductByConsolidationId(string id)
+        private async Task<ProductDto> GetProductByConsolidationId(Guid id)
         {
             //var consolidation = Guid.Parse(id);
 
-            var prod = await _productRepository.FindOneAsync(p => p.ConsolidationId == id);
+            var prod = await _productRepository.FindOneAsync(p => p.Id == id);
 
             return prod;
         }

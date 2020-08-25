@@ -53,14 +53,11 @@ namespace CDBMongo.Data.Repositories
             return Task.Run(() => _collection.Find(filterExpression).FirstOrDefaultAsync());
         }
 
-        public virtual Task<TDocument> FindByIdAsync(string id)
+        public virtual Task<TDocument> FindByIdAsync(Guid id)
         {
             return Task.Run(() =>
             {
-                var objectId = Guid.Parse(id);
-                //var bytes = GuidConverter.ToBytes(objectId, GuidRepresentation.PythonLegacy);
-                //var guid = new Guid(bytes);
-                var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
+                var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, id);
                 return _collection.Find(filter).SingleOrDefaultAsync();
             });
         }
@@ -86,13 +83,11 @@ namespace CDBMongo.Data.Repositories
             return Task.Run(() => _collection.FindOneAndDeleteAsync(filterExpression));
         }
 
-        public Task DeleteByIdAsync(string id)
+        public Task DeleteByIdAsync(Guid id)
         {
             return Task.Run(() =>
             {
-                //var objectId = new ObjectId(id);
-                var objectId = Guid.Parse(id);
-                var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
+                var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, id);
                 _collection.FindOneAndDeleteAsync(filter);
             });
         }
